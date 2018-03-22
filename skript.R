@@ -10,78 +10,60 @@ Weg <- c(980, 667, 220, 582, 335, 751, 710, 780, 415, 1320, 752, 260, 337,
          567, 680, 535, 610, 420, 1050)
 
 Geschlecht <- factor(c("w", "w", "m", "m", "m", "m", "m", "m", "m", 
-                       "m", NA, "w", "w", "w", "w", "w", "w", "w", "w")) 
+                       "m", NA, "w", "w", "w", "w", "w", "w", "w", "w"))
 
 
 
-# Häufigkeiten ------------------------------------------------------------
+# Wie kann ich diese Daten auswerten? -------------------------------------
 
-table(Geschlecht)
-plot(table(Geschlecht))
-barplot(table(Geschlecht))
-mosaicplot(Geschlecht)
 
-prop.table(table(Geschlecht))
-cumsum(table(Geschlecht))
-cumsum(prop.table(table(Geschlecht)))
+# Haeufigkeiten -----------------------------------------------------------
 
 table(Weg)
-sort(Weg)
-plot(sort(Weg))
+# Klassifizieren
+c(0, 500, 1000, 1500)
+table(cut(Weg, c(0, 500, 1000, 1500)))
+barplot(table(cut(Weg, c(0, 500, 1000, 1500))))
+hist(Weg, c(0, 500, 1000, 1500), main="Weglängen")
 stem(Weg)
-hist(Weg)
 
-table(cut(Weg, seq(0, 1500, 250)))
-table(cut(Weg, seq(0, 1500, 250)), Geschlecht)
-addmargins(table(cut(Weg, seq(0, 1500, 250)), Geschlecht))
-erg <- addmargins(table(cut(Weg, seq(0, 1500, 250)), Geschlecht))
-rownames(erg) <- c("0-250", "250-500", "500-750", "750-1000", "1000-1250", "1250-1500", "Summe")
-colnames(erg) <- c("Jungen", "Mädchen", "Summe")
-erg
+table(Geschlecht)
+barplot(table(Geschlecht))
 
-barplot(table(cut(Weg, seq(0, 1500, 250))))
-barplot(table(Geschlecht, cut(Weg, seq(0, 1500, 250))))
-mosaicplot(table(Geschlecht, cut(Weg, seq(0, 1500, 250))))
+table(cut(Weg, c(0, 500, 1000, 1500)), Geschlecht)
 
 
 # Mittelwerte -------------------------------------------------------------
 
 mean(Weg)
+median(Weg)
+
 tapply(Weg, Geschlecht, mean)
-plot(tapply(Weg, Geschlecht, mean))
 barplot(tapply(Weg, Geschlecht, mean))
 
-library("psych") # Funktionen recherchieren
-geometric.mean(Weg)
+library("psych")
 harmonic.mean(Weg)
+geometric.mean(Weg)
 
-median(Weg)
-quantile(Weg)
-
-# Modalwert (Geschlecht) # Internetrecherche
 names(which.max(table(Geschlecht)))
 
-boxplot(Weg)
-boxplot(Weg ~ Geschlecht)
 
+
+# Boxplots ----------------------------------------------------------------
+
+boxplot(Weg)
+boxplot(Weg~Geschlecht)
+
+quantile(Weg)
 
 # Streuungsmaße -----------------------------------------------------------
 
 range(Weg)
 max(Weg)-min(Weg)
-IQR(Weg)
 
 sd(Weg)
 var(Weg)
-
-# Mittlere Abweichung (Formel erstellen)
-mean(abs(Weg-mean(Weg)))
-mean(abs(Weg-median(Weg)))
-
-# Variationskoeffizient
-sd(Weg)/mean(Weg)
-
-
+sqrt(var(Weg))
 
 # Bessere Grafiken --------------------------------------------------------
 
@@ -91,13 +73,8 @@ library("ggplot2")
 Daten = data.frame(Weg,Geschlecht)
 
 ggplot(Daten, aes(x=Weg, fill = Geschlecht)) +
-  # geom_histogram(bins=10) + 
-  geom_histogram(binwidth = 250, center = 125)
-ylab("Häufigkeit") + 
-  xlab("Länge Schulweg in Metern") +
-  xlim(0,1500) + 
-  scale_fill_manual(values=c("lightblue","salmon"), na.value = 'grey') +
-  guides(fill=FALSE) +
+  #geom_histogram(bins=10) +
+  geom_histogram(binwidth = 250, center = 125) + 
+  xlab("Weglänge")+
+  ylab("Anzahl")+
   theme_bw()
-
-
